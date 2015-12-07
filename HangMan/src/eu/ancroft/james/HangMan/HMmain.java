@@ -5,7 +5,7 @@ public class HMmain {
 //hello!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		HMgraphic gui = new HMgraphic();
 		gui.go();
-//abcdefg   
+//abcdefg  fart 
 		//
 		
 	}
