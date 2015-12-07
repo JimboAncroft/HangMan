@@ -5,7 +5,7 @@ public class HMmain {
 
 		HMgraphic gui = new HMgraphic();
 		gui.go();
-
+//abcdefg
 	}
 
 }
