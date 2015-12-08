@@ -13,7 +13,6 @@ import java.util.Random;
 
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class HMgraphic {
@@ -26,75 +25,87 @@ public class HMgraphic {
 	boolean EOG = false;
 	int[] Guessed;
 	String Cword;
+	Object[] letterGuess = new Object[1];
+	String LG = ".";
 
 	public void go() {
 		// Uses fetchWord to open a word files and get a random word from it.
-
 		fetchWord FW = new fetchWord();
 		FW.NewWord();
 		Cword = FW.getFetchWord();
 		Guessed = new int[Cword.length()];
 
-		System.out.println(FW.getFetchWord());
+		System.out.println(Cword);
 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		MyDrawPanel drawPanel = new MyDrawPanel();
 		frame.getContentPane().add(drawPanel);
 		frame.setSize(500, 500);
 		frame.setVisible(true);
-		
+
 		frame.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
 		drawPanel.setPreferredSize(new Dimension(400, 400));
 		frame.add(drawPanel);
 		frame.setVisible(true);
 		frame.setSize(400, 700); // window is 500 pixels wide, 400 high
-		
-		
-		
-		
+
 		// CheckboxES
 		String labels[] = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r",
 				"s", "t", "u", "v", "w", "x", "y", "z" };
+
+		// An array of checkboxes
+		JCheckBox CheckBXArray[] = new JCheckBox[labels.length];
 		for (int i = 0; i < labels.length; i++) {
-			JCheckBox checkbox = new JCheckBox(new CheckboxAction(labels[i]));
-			frame.add(checkbox);
-			
+			CheckBXArray[i] = new JCheckBox(labels[i]);
+			frame.add(CheckBXArray[i]);
 
 		}
-
+		
+		int startPos = 0;
+		int finalPos = 0;
+		int currentPos = 0;
 
 		while (!EOG) {
-			JFrame frame = new JFrame();
-			
-			
-			/**
-			 * Need to get guessed letter into letterGuess.
-			 */
-			
-			
-			
-			
-			int startPos = 0;
-			int finalPos = 0;
-			int currentPos = 0;
-			do {
 
-				// if (Cword.indexOf(text) != -1) {
-				if (Cword.indexOf(letterGuess, startPos) != -1) {
+			LG = null;
+			for (int i = 0; i < labels.length; i++) {
+				if (CheckBXArray[i].getSelectedObjects() != null) {
 
-					Guessed[Cword.indexOf(letterGuess, startPos)] = 1;
-					drawPanel.paint(drawPanel.getGraphics());
-					finalPos = Cword.lastIndexOf(letterGuess);
-					currentPos = Cword.indexOf(letterGuess, startPos);
+					if (CheckBXArray[i].isEnabled()) {
 
-					startPos = Cword.indexOf(letterGuess, startPos) + 1;
+						CheckBXArray[i].setEnabled(false);
 
-				} else {
-					Misses++;
-					drawPanel.paint(drawPanel.getGraphics());
+						letterGuess = CheckBXArray[i].getSelectedObjects();
+						LG = (String) letterGuess[0];
+
+						startPos = 0;
+						finalPos = 0;
+						currentPos = 0;
+						do {
+
+							// if (Cword.indexOf(text) != -1) {
+							if (Cword.indexOf(LG, startPos) != -1) {
+
+								Guessed[Cword.indexOf(LG, startPos)] = 1;
+								drawPanel.paint(drawPanel.getGraphics());
+								finalPos = Cword.lastIndexOf(LG);
+								currentPos = Cword.indexOf(LG, startPos);
+
+								startPos = Cword.indexOf(LG, startPos) + 1;
+
+							} else {
+								Misses++;
+								System.out.println(Misses);
+								drawPanel.paint(drawPanel.getGraphics());
+							}
+
+						} while (finalPos != currentPos);
+
+					}
+
 				}
 
-			} while (finalPos != currentPos);
+			}
 
 			for (int n = 0; n < Cword.length(); n++) {
 				EOG = true;
@@ -104,16 +115,15 @@ public class HMgraphic {
 			}
 
 		}
-
 	}
 
 	class MyDrawPanel extends JPanel {
 
-		private static final long serialVersionUID = 1L;
+		private static final long serialVersionUID = -2237088330087604059L;
 
 		public void paintComponent(Graphics g) {
 
-			g.setColor(Color.black);
+			g.setColor(Color.blue);
 
 			for (int n = 0; n < Misses; n++) {
 				EDC = penCoords.getHMss(n);
@@ -124,7 +134,6 @@ public class HMgraphic {
 					g.drawLine(EDC.x1, EDC.y1, EDC.x2, EDC.y2);
 				}
 			}
-			// g.drawString(Cword.substring(0), 100, 100);
 
 			int letterX = 100;
 			int letterY = 300;
@@ -154,27 +163,18 @@ public class HMgraphic {
 		public fetchWord() {
 			try {
 				lines = Files.readAllLines(Paths.get("words.txt"), Charset.defaultCharset());
-			} catch (IOException e1) {
+			} catch (IOException e1) {e1.printStackTrace();}
 
-				e1.printStackTrace();
-			}
-
-			// On the first run get a new word
 		}
 
 		public void NewWord() {
-
 			NOL = lines.size();
 			Rnumber = rand.nextInt(NOL);
 			rWord = lines.get(Rnumber);
 		}
 
 		public String getFetchWord() {
-
 			return rWord;
-
 		}
-
 	}
-
 }
