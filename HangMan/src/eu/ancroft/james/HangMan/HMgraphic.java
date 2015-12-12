@@ -1,29 +1,21 @@
 package eu.ancroft.james.HangMan;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
-import java.awt.GridLayout;
 import java.awt.Panel;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Random;
 
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
 
 public class HMgraphic {
 
@@ -92,9 +84,7 @@ public class HMgraphic {
 						LG = ChBx.getText();
 						// Add current guess to the previous ones
 						PreviousGuesses[i] = LG;
-						// while (ChBx.isEnabled()) {
-						// ChBx.setEnabled(false);// grey out the checkbox
-						// }
+						
 						startPos = 0;
 						finalPos = 0;
 						currentPos = 0;
@@ -120,28 +110,26 @@ public class HMgraphic {
 
 			}
 
-			// System.out.print("misses" + Misses+ "\n");
-			System.out.println();
-			System.out.print("Guessed");
+			EOG = true;
 			for (int n = 0; n < Cword.length(); n++) {
-				System.out.print(Guessed[n]);
-				// System.out.println();
-				EOG = true;
+				// System.out.print(n+" "+Guessed[n]+";");
+
 				if (Guessed[n] == 0) {
-	
+
 					EOG = false;
 				}
 			}
 			if (EOG) {
 				while (true) {
-					System.out.print(EOG);
 					System.out.println("You WIN");
 				}
 			}
-			System.out.print("misses" + Misses);
-			if (Misses > 8) {
+			if (Misses > 9) {
 				while (true) {
-					System.out.print(EOG);
+					
+					
+					
+					
 					System.out.println("You Lose");
 				}
 			}
@@ -178,7 +166,11 @@ public class HMgraphic {
 				} else {
 					// Print a dash.
 					g.drawString("_", letterX + (letterSpace * n), letterY);
-				}
+				}	
+			}
+			if(EOG){
+				//draw some stuff to end the game
+				
 			}
 
 		}
@@ -190,13 +182,19 @@ public class HMgraphic {
 		int NOL;
 		int Rnumber;
 		Random rand = new Random();
-		List<String> lines = null;
+		ArrayList<String> lines = new ArrayList<String>();
 
 		public fetchWord() {
-			try {
-				lines = Files.readAllLines(Paths.get("words.txt"), Charset.defaultCharset());
-			} catch (IOException e1) {
-				e1.printStackTrace();
+
+			try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+					Thread.currentThread().getContextClassLoader().getResourceAsStream("words.txt")))) {
+				for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+					lines.add(line);
+					// System.out.println(line);
+				}
+
+			} catch (IOException e) { // TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 
 		}
