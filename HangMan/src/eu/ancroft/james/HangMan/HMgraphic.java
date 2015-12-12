@@ -23,7 +23,9 @@ public class HMgraphic {
 	HMpenss EDC = new HMpenss();
 
 	int Misses;
-	boolean EOG = false;
+	boolean win = false;
+	
+	boolean lose=false;
 	int[] Guessed;
 	String Cword;
 	Object[] letterGuess = new Object[1];
@@ -72,7 +74,7 @@ public class HMgraphic {
 		String[] PreviousGuesses = new String[26];
 		Component[] component = panel.getComponents();
 		drawPanel.paint(drawPanel.getGraphics());
-		while (!EOG) {
+		while (!win) {
 			LG = null;
 
 			for (int i = 0; i < component.length; i++) {
@@ -84,7 +86,7 @@ public class HMgraphic {
 						LG = ChBx.getText();
 						// Add current guess to the previous ones
 						PreviousGuesses[i] = LG;
-						
+
 						startPos = 0;
 						finalPos = 0;
 						currentPos = 0;
@@ -110,27 +112,25 @@ public class HMgraphic {
 
 			}
 
-			EOG = true;
+			win = true;
 			for (int n = 0; n < Cword.length(); n++) {
-				// System.out.print(n+" "+Guessed[n]+";");
 
 				if (Guessed[n] == 0) {
 
-					EOG = false;
+					win = false;
+					
 				}
 			}
-			if (EOG) {
-				while (true) {
-					System.out.println("You WIN");
-				}
+			if (win) {
+				drawPanel.paint(drawPanel.getGraphics());
+				while(win){}
 			}
 			if (Misses > 9) {
 				while (true) {
-					
-					
-					
-					
-					System.out.println("You Lose");
+					lose=true;
+					drawPanel.paint(drawPanel.getGraphics());
+					while(lose){}
+
 				}
 			}
 
@@ -166,13 +166,20 @@ public class HMgraphic {
 				} else {
 					// Print a dash.
 					g.drawString("_", letterX + (letterSpace * n), letterY);
-				}	
+				}
 			}
-			if(EOG){
-				//draw some stuff to end the game
+			if (win) {
+				g.setColor(Color.GREEN);
+				g.drawString("YOU WIN", 300, 300);
 				
-			}
 
+			}
+			if (lose) {
+				g.drawString("YOU LOSE", 300, 300);
+				g.setColor(Color.RED);
+				g.drawString("The word is: "+Cword, 100, 350);
+
+			}
 		}
 
 	}
